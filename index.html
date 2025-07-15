@@ -1,11 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Fechas Disponibles</title>
-  </head>
-  <body>
-    <h1>Fechas disponibles</h1>
-    <p>Esta página mostrará las fechas disponibles para reservar.</p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Fechas Disponibles</title>
+</head>
+<body>
+  <h1>Fechas disponibles</h1>
+  <ul id="lista-fechas"></ul>
+
+  <script>
+    fetch('https://tu-servidor-n8n.com/webhook/Tally-Citas-SupremeGarage')  // Reemplaza con tu URL real
+      .then(res => res.json())
+      .then(data => {
+        const ul = document.getElementById("lista-fechas");
+        data.fechasDisponibles.forEach(fecha => {
+          const li = document.createElement("li");
+          li.textContent = fecha;
+          ul.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error("Error al obtener las fechas:", err);
+      });
+  </script>
+</body>
 </html>
