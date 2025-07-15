@@ -1,53 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <title>Fechas Disponibles</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+    .loading {
+      color: gray;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+  </style>
 </head>
 <body>
   <h1>Fechas disponibles</h1>
-
-  <label for="servicio">Selecciona un servicio:</label>
-  <select id="servicio">
-    <option value="Lavado detallado">Lavado detallado</option>
-    <option value="Encerado">Encerado</option>
-    <option value="Wrapping">Wrapping</option>
-    <option value="Cerámica">Cerámica</option>
-  </select>
-
-  <button onclick="buscarFechas()">Buscar fechas disponibles</button>
-
-  <ul id="lista-fechas"></ul>
+  <p id="info" class="loading">Cargando fechas...</p>
+  <ul id="lista"></ul>
 
   <script>
-    async function buscarFechas() {
-      const servicio = document.getElementById('servicio').value;
-      const url = "https://TU_DOMINIO_O_WEBHOOK_DE_N8N"; // <== Reemplaza esto
+    // Extraer parámetro "servicio" de la URL
+    const params = new URLSearchParams(window.location.search);
+    const servicio = params.get("servicio");
 
-      const res = await fetch(url, {
+    const info = document.getElementById("info");
+    const lista = document.getElementById("lista");
+
+    if (!servicio) {
+      info.textContent = "❌ No se especificó un servicio.";
+    } else {
+      info.textContent = `Buscando fechas disponibles para: ${servicio}...`;
+
+      // Llamar al webhook de n8n
+      fetch("https://TU_WEBHOOK_AQUI.webhook.n8n.cloud/fechas-disponibles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ servicio })
-      });
-
-      const data = await res.json();
-      const fechas = data.fechasDisponibles || [];
-
-      const ul = document.getElementById("lista-fechas");
-      ul.innerHTML = "";
-
-      if (fechas.length === 0) {
-        ul.innerHTML = "<li>No hay fechas disponibles para este servicio</li>";
-        return;
-      }
-
-      fechas.forEach(fecha => {
-        const li = document.createElement("li");
-        li.textContent = fecha;
-        ul.appendChild(li);
-      });
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.fechas && data.fechas.length > 0) {
+            info.textContent = `Fechas disponibles para: ${servicio}`;
+            data.fechas.forEach(fecha => {
+              const item = document.createElement("li");
+              item.textContent = `✅ ${fecha}`;
+              lista.appendChild(item);
+            });
+          } else {
+            info.textContent = `No hay fechas disponibles para ${servicio}.`;
+          }
+        })
+        .catch(error => {
+          info.textContent = "❌ Error al consultar fechas.";
+          console.error(error);
+        });
     }
   </script>
 </body>
