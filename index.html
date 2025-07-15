@@ -5,33 +5,37 @@
   <title>Fechas Disponibles</title>
   <style>
     body { font-family: Arial; padding: 20px; }
-    select, ul { margin-top: 10px; font-size: 16px; }
+    select, button { font-size: 16px; margin: 5px; }
     .error { color: red; }
   </style>
 </head>
 <body>
   <h1>Fechas disponibles</h1>
 
-  <label for="servicio">Selecciona un servicio:</label>
+  <label for="servicio">Selecciona un servicio: </label>
   <select id="servicio">
-    <option value="">-- Escoge uno --</option>
-    <option value="Cerámica">Cerámica</option>
+    <option value="">-- Selecciona --</option>
+    <option value="Lavado detallado">Lavado detallado</option>
     <option value="Encerado">Encerado</option>
     <option value="Wrapping">Wrapping</option>
-    <option value="Lavado detallado">Lavado detallado</option>
+    <option value="Cerámica">Cerámica</option>
   </select>
 
-  <div id="fechas"></div>
+  <button onclick="buscarFechas()">Buscar fechas disponibles</button>
+
+  <div id="resultado" style="margin-top: 20px;"></div>
 
   <script>
-    document.getElementById('servicio').addEventListener('change', async (e) => {
-      const servicio = e.target.value;
-      const contenedor = document.getElementById('fechas');
-      contenedor.innerHTML = '';
+    async function buscarFechas() {
+      const servicio = document.getElementById('servicio').value;
+      const contenedor = document.getElementById('resultado');
 
-      if (!servicio) return;
+      if (!servicio) {
+        contenedor.innerHTML = '<p class="error">❌ Por favor selecciona un servicio.</p>';
+        return;
+      }
 
-      contenedor.innerHTML = 'Buscando fechas disponibles...';
+      contenedor.innerHTML = '🔄 Buscando fechas...';
 
       try {
         const res = await fetch('https://n8n.automatedflow.net/webhook/Fechas-Disponibles', {
@@ -49,11 +53,10 @@
             data.fechas.map(fecha => `<li>${fecha}</li>`).join('') +
             '</ul>';
         }
-
       } catch (err) {
         contenedor.innerHTML = '<p class="error">❌ Error al consultar fechas.</p>';
       }
-    });
+    }
   </script>
 </body>
 </html>
