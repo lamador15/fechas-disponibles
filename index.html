@@ -38,7 +38,7 @@
       contenedor.innerHTML = '🔄 Buscando fechas...';
 
       try {
-        const res = await fetch(`https://n8n.automatedflow.net/webhook-test/Fechas-Disponibles=${encodeURIComponent(servicio)}`);
+        const res = await fetch(`https://n8n.automatedflow.net/webhook/Fechas-Disponibles?servicio=${encodeURIComponent(servicio)}`);
 
         const data = await res.json();
 
@@ -46,7 +46,7 @@
           contenedor.innerHTML = '<p class="error">❌ No hay fechas disponibles para este servicio.</p>';
         } else {
           contenedor.innerHTML = '<h3>Fechas disponibles:</h3><ul>' +
-            data.map(fecha => `<li>${fecha.Fecha}</li>`).join('') +
+            data.map(fila => `<li>${fila.Fecha}</li>`).join('') +
             '</ul>';
         }
       } catch (err) {
