@@ -6,22 +6,49 @@
 </head>
 <body>
   <h1>Fechas disponibles</h1>
+
+  <label for="servicio">Selecciona un servicio:</label>
+  <select id="servicio">
+    <option value="Lavado detallado">Lavado detallado</option>
+    <option value="Encerado">Encerado</option>
+    <option value="Wrapping">Wrapping</option>
+    <option value="Cerámica">Cerámica</option>
+  </select>
+
+  <button onclick="buscarFechas()">Buscar fechas disponibles</button>
+
   <ul id="lista-fechas"></ul>
 
   <script>
-    fetch('https://tu-servidor-n8n.com/webhook/Tally-Citas-SupremeGarage')  // Reemplaza con tu URL real
-      .then(res => res.json())
-      .then(data => {
-        const ul = document.getElementById("lista-fechas");
-        data.fechasDisponibles.forEach(fecha => {
-          const li = document.createElement("li");
-          li.textContent = fecha;
-          ul.appendChild(li);
-        });
-      })
-      .catch(err => {
-        console.error("Error al obtener las fechas:", err);
+    async function buscarFechas() {
+      const servicio = document.getElementById('servicio').value;
+      const url = "https://TU_DOMINIO_O_WEBHOOK_DE_N8N"; // <== Reemplaza esto
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ servicio })
       });
+
+      const data = await res.json();
+      const fechas = data.fechasDisponibles || [];
+
+      const ul = document.getElementById("lista-fechas");
+      ul.innerHTML = "";
+
+      if (fechas.length === 0) {
+        ul.innerHTML = "<li>No hay fechas disponibles para este servicio</li>";
+        return;
+      }
+
+      fechas.forEach(fecha => {
+        const li = document.createElement("li");
+        li.textContent = fecha;
+        ul.appendChild(li);
+      });
+    }
   </script>
 </body>
 </html>
