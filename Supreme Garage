@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fechas Disponibles</title>
+  <meta charset="UTF-8" />
+</head>
+<body>
+  <h1>Fechas Disponibles</h1>
+  <p>Selecciona tu tipo de servicio en el formulario para ver las fechas disponibles.</p>
+  <p>Este enlace actualizará la información dinámicamente más adelante.</p>
+</body>
+</html>
